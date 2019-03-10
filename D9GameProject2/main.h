@@ -3,7 +3,7 @@
 #define	_UGP_MAIN_H_
 
 #include "../StrandedEngine/engine.h"
-#pragma comment(lib,"../Debug/StrangeEngine.lib")
+#pragma comment(lib,"../Debug/StrandedEngine.lib")
 
 #define WINDOW_CLASS "StrandedGame"
 #define WINDOW_TITLE "Stranded"

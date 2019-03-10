@@ -6,5 +6,17 @@
 #define UGP_OK 1
 #define UGP_FAIL 0
 
+#define WinHWND HWND
 
+enum  PrimType
+{
+	NULL_TYPE,
+	POINT_LIST,
+	TRIANGLE_LIST,
+	TRIANGLE_STRIP,
+	TRIANGLE_FAN,
+	LINE_LIST,
+	LINE_STRIP
+
+};
 

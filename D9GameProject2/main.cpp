@@ -145,6 +145,8 @@ int WINAPI WinMain(HINSTANCE h,
 //初始化游戏引擎
 bool InitializeEngine()
 {
+	//创建D3D的渲染器(如何创建失败直接返回)
+	if(!CreateD3DRenderer(&g_Render))return false;
 	return true;
 }
 //释放游戏引擎
