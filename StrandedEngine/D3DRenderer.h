@@ -26,6 +26,15 @@ public:
 	CD3DRenderer();
 	~CD3DRenderer();
 
+	bool Initialize(int w, int h, WinHWND mainWin, bool fullScreen);
+
+	void CalculateProjMatrix(float fov, float n, float f);
+	void CalculateOrthoMatrix(float n, float f);
+
+
+private:
+	void OneTimeInit();
+
 private :
 	D3DCOLOR m_Color;								//d3d—’…´
 	LPDIRECT3D9 m_Direct3D;							//d3d∂‘œÛ

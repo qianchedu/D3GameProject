@@ -10,6 +10,11 @@ public:
 		m_near(0),
 		m_far(0) {}
 	virtual ~CRenderInterface() {}
+	virtual bool Initialize(int w, int h,WinHWND mainWin, bool fullScreen) = 0;
+
+	virtual void OneTimeInit() = 0;
+	virtual void CalculateProjMatrix(float fov, float n, float f) = 0;
+	virtual void CalculateOrthoMatrix(float n, float f) = 0;
 
 		
 protected:

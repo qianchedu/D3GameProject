@@ -147,6 +147,8 @@ bool InitializeEngine()
 {
 	//创建D3D的渲染器(如何创建失败直接返回)
 	if(!CreateD3DRenderer(&g_Render))return false;
+
+	if (!g_Render->Initialize(WIN_WIDTH, WIN_HEIGHT, g_hwnd, FULLSCREENN)) return false;
 	return true;
 }
 //释放游戏引擎
