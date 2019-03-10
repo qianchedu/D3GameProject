@@ -1,8 +1,7 @@
-#include <Windows.h>
 #include "main.h"
 
 HWND g_hwnd;
-
+CRenderInterface *g_Render = NULL;
 
 //消息处理函数
 //参数1:窗口句柄

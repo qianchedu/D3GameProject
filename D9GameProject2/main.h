@@ -2,6 +2,9 @@
 
 #define	_UGP_MAIN_H_
 
+#include "../StrandedEngine/engine.h"
+#pragma comment(lib,"../Debug/StrangeEngine.lib")
+
 #define WINDOW_CLASS "StrandedGame"
 #define WINDOW_TITLE "Stranded"
 #define WIN_WIDTH 800

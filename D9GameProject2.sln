@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.28307.421
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "D9GameProject2", "D9GameProject2\D9GameProject2.vcxproj", "{4560043C-E4DE-4AAD-B101-F12D8B17E661}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "StrangeEngine", "StrangeEngine\StrangeEngine.vcxproj", "{FBA4F237-0C12-4175-AEA0-E8F51D70403F}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "StrandedEngine", "StrandedEngine\StrandedEngine.vcxproj", "{FBA4F237-0C12-4175-AEA0-E8F51D70403F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
