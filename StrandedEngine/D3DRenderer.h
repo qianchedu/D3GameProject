@@ -46,6 +46,8 @@ public:
 	//参数一：顶点类型
 	int CreateStaticBuffer(VertexType, PrimType, int totalVerts, int totalIndeces, int stride, void **data, unsigned int *indices, int *staticId);
 
+	void Shutdown();
+
 
 
 private:

@@ -29,6 +29,8 @@ public:
 	//参数一：顶点类型
 	virtual int CreateStaticBuffer(VertexType , PrimType, int totalVerts,int totalIndeces,int stride,void **data ,unsigned int *indices,int *staticId) = 0;
 
+	//释放资源
+	virtual void Shutdown() = 0;
 		
 protected:
 	int m_screenWidth;				//屏幕窗口的宽度

@@ -28,14 +28,14 @@ CD3DRenderer::CD3DRenderer()
 
 CD3DRenderer::~CD3DRenderer()
 {
-
+	Shutdown();
 }
 
 
 bool CD3DRenderer::Initialize(int w, int h, WinHWND mainWin, bool fullScreen)
 {
 
-	
+	Shutdown();
 	m_mainHandle = mainWin;
 
 	if (!m_mainHandle)return false;
@@ -248,4 +248,40 @@ int  CD3DRenderer::CreateStaticBuffer(VertexType vType, PrimType primType,
 	memcpy(ptr, data, totalVerts*stride);
 
 	m_staticBufferList[index].vbPtr->Unlock();
+
+	*staticId = m_numStaticBuffers;
+	m_numStaticBuffers++;
+
+	return UGP_OK;
+}
+
+
+void CD3DRenderer::Shutdown()
+{
+	for (int s = 0; s < m_numStaticBuffers; s++)
+	{
+		if (m_staticBufferList[s].vbPtr)
+		{
+			m_staticBufferList[s].vbPtr->Release();
+			m_staticBufferList[s].vbPtr = NULL;
+		}
+
+		if (m_staticBufferList[s].ibPtr)
+		{
+			m_staticBufferList[s].ibPtr->Release();
+			m_staticBufferList[s].ibPtr = NULL;
+		}
+	}
+
+	m_numStaticBuffers = 0;
+	if (m_staticBufferList)delete[] m_staticBufferList;
+	m_staticBufferList = NULL;
+
+	if (m_Device)m_Device->Release();
+
+	if (m_Direct3D)m_Direct3D->Release();
+
+	m_Device = NULL;
+	m_Direct3D = NULL;
+
 }
