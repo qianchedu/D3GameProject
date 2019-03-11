@@ -9,6 +9,12 @@ bool CreateD3DRenderer(CRenderInterface **pObj)
 	return true;
 }
 
+unsigned long CreateD3DFVF(int flags)
+{
+	unsigned long fvf = 0;
+	return fvf;
+}
+
 CD3DRenderer::CD3DRenderer()
 {
 	m_Direct3D = NULL;
@@ -178,4 +184,68 @@ void  CD3DRenderer::ClearBuffers(bool bColor, bool bDepth, bool bStencil)
 	if (m_renderingScene)
 		if (FAILED(m_Device->BeginScene()))		//开始渲染
 			return;
+}
+
+//创建静态缓存
+int  CD3DRenderer::CreateStaticBuffer(VertexType vType, PrimType primType, 
+	int totalVerts, int totalIndices, int stride, void **data, unsigned int *indices, int *staticId)
+{
+
+	void *ptr;
+	int index = m_numStaticBuffers;
+	if (!m_staticBufferList)
+	{
+		m_staticBufferList = new stD3DStaticBuffer[1];
+		if (!m_staticBufferList)return UGP_FAIL;
+
+	}
+	else
+	{
+		stD3DStaticBuffer *temp;
+		temp = new stD3DStaticBuffer[m_numStaticBuffers + 1];
+
+		memcpy(temp, m_staticBufferList, sizeof(stD3DStaticBuffer)*m_numStaticBuffers);
+
+		delete[] m_staticBufferList;
+		m_staticBufferList = temp;
+
+
+	}
+
+	m_staticBufferList[index].numVerts = totalVerts;
+	m_staticBufferList[index].numIndices = totalIndices;
+	m_staticBufferList[index].primType = primType;
+	m_staticBufferList[index].stride = stride;
+	m_staticBufferList[index].fvf = CreateD3DFVF(vType);
+
+
+	//如果有顶点索引 就创建顶点缓存
+	if (totalIndices > 0)
+	{
+		if (FAILED(m_Device->CreateIndexBuffer(sizeof(unsigned int)*totalIndices, D3DUSAGE_WRITEONLY,
+			D3DFMT_INDEX16, D3DPOOL_DEFAULT, &m_staticBufferList[index].ibPtr, NULL)))
+		{
+			return UGP_FAIL;
+		}
+
+		if (FAILED(m_staticBufferList[index].ibPtr->Lock(0, 0, (void**)&ptr, 0)))
+			return UGP_FAIL;
+
+		memcpy(ptr, indices, sizeof(unsigned int)*totalIndices);
+		m_staticBufferList[index].ibPtr->Unlock();
+	}
+	else 
+	{
+		m_staticBufferList[index].ibPtr = NULL;
+	}
+
+	if (FAILED(m_Device->CreateVertexBuffer(totalVerts*stride, D3DUSAGE_WRITEONLY, m_staticBufferList[index].fvf,
+		D3DPOOL_DEFAULT, &m_staticBufferList[index].vbPtr, NULL)))
+		return UGP_FAIL;
+
+	if (FAILED(m_staticBufferList[index].vbPtr->Lock(0, 0, (void**)&ptr, 0)))
+		return UGP_FAIL;
+	memcpy(ptr, data, totalVerts*stride);
+
+	m_staticBufferList[index].vbPtr->Unlock();
 }

@@ -26,6 +26,9 @@ public:
 	//清除渲染缓存-》工作到一半又不想做了
 	virtual void ClearBuffers(bool bColor,bool bDepth,bool bStencil) = 0;
 
+	//参数一：顶点类型
+	virtual int CreateStaticBuffer(VertexType , PrimType, int totalVerts,int totalIndeces,int stride,void **data ,unsigned int *indices,int *staticId) = 0;
+
 		
 protected:
 	int m_screenWidth;				//屏幕窗口的宽度

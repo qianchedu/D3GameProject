@@ -10,8 +10,11 @@
 //D3D 缓存结构
 struct stD3DStaticBuffer
 {
+	stD3DStaticBuffer() :vbPtr(0), ibPtr(0), numVerts(0),
+		numIndices(0), stride(0), fvf(0), primType(NULL_TYPE) {}
+
 	LPDIRECT3DVERTEXBUFFER9 vbPtr;
-	LPDIRECT3DINDEXBUFFER9 idPtr;
+	LPDIRECT3DINDEXBUFFER9 ibPtr;
 	int numVerts;
 	int numIndices;
 	int stride;
@@ -39,6 +42,10 @@ public:
 	void EndRender();
 
 	void ClearBuffers(bool bColor, bool bDepth, bool bStencil);
+
+	//参数一：顶点类型
+	int CreateStaticBuffer(VertexType, PrimType, int totalVerts, int totalIndeces, int stride, void **data, unsigned int *indices, int *staticId);
+
 
 
 private:
