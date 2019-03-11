@@ -119,3 +119,63 @@ void CD3DRenderer::CalculateOrthoMatrix(float n, float f)
 	m_Device->SetTransform(D3DTS_PROJECTION, &ortho);
 
 }
+
+
+//清屏颜色
+void CD3DRenderer::SetClearCol(float r, float g, float b)
+{
+	m_Color = D3DCOLOR_COLORVALUE(r, g, b, 1.0f);
+
+}
+
+
+//开始渲染
+void CD3DRenderer::StartRender(bool bColor, bool bDepth, bool bStencil)
+{
+	if (!m_Device)return;
+	unsigned int buffers = 0;
+	if (bColor)buffers |= D3DCLEAR_TARGET;
+	if (bDepth)buffers |= D3DCLEAR_ZBUFFER;
+	if (bStencil)buffers |= D3DCLEAR_STENCIL;
+
+	if (FAILED(m_Device->Clear(0, NULL, buffers, m_Color, 1, 0)))
+		return;
+
+	if (FAILED(m_Device->BeginScene()))
+		return;
+
+	m_renderingScene = true;			//开始渲染
+
+
+
+
+
+
+}
+//结束渲染
+void CD3DRenderer::EndRender()
+{
+	if (!m_Device)return;
+	m_Device->EndScene();
+	m_Device->Present(NULL, NULL, NULL, NULL);		//将渲染的图形显示出来
+	m_renderingScene = false;		//渲染结束
+}
+
+
+void  CD3DRenderer::ClearBuffers(bool bColor, bool bDepth, bool bStencil)
+{
+	if (!m_Device)return;
+	
+	unsigned int buffers = 0;
+	if (bColor)buffers |= D3DCLEAR_TARGET;
+	if (bDepth)buffers |= D3DCLEAR_ZBUFFER;
+	if (bStencil)buffers |= D3DCLEAR_STENCIL;
+
+	if(m_renderingScene) m_Device->EndScene();
+	if (FAILED(m_Device->Clear(0, NULL, buffers, m_Color, 1, 0)))
+		return;
+
+	if (m_renderingScene)
+		if (FAILED(m_Device->BeginScene()))		//开始渲染
+			return;
+}

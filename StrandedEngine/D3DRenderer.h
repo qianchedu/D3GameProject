@@ -31,6 +31,15 @@ public:
 	void CalculateProjMatrix(float fov, float n, float f);
 	void CalculateOrthoMatrix(float n, float f);
 
+	void SetClearCol(float r, float g, float b);
+
+	//ø™ º‰÷»æ
+	void StartRender(bool bColor, bool bDepth, bool bStencil);
+	//Ω· ¯‰÷»æ
+	void EndRender();
+
+	void ClearBuffers(bool bColor, bool bDepth, bool bStencil);
+
 
 private:
 	void OneTimeInit();

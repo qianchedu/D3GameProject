@@ -16,6 +16,16 @@ public:
 	virtual void CalculateProjMatrix(float fov, float n, float f) = 0;
 	virtual void CalculateOrthoMatrix(float n, float f) = 0;
 
+	//清屏颜色
+	virtual void SetClearCol(float r, float g, float b) = 0;		
+
+	//开始渲染
+	virtual void StartRender(bool bColor, bool bDepth, bool bStencil) = 0;	
+	//结束渲染
+	virtual void EndRender() = 0;
+	//清除渲染缓存-》工作到一半又不想做了
+	virtual void ClearBuffers(bool bColor,bool bDepth,bool bStencil) = 0;
+
 		
 protected:
 	int m_screenWidth;				//屏幕窗口的宽度
