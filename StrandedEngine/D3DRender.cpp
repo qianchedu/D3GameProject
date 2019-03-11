@@ -9,6 +9,12 @@ bool CreateD3DRenderer(CRenderInterface **pObj)
 	return true;
 }
 
+unsigned long CreateD3DFVF(int flags)
+{
+	unsigned long fvf = 0;
+	return fvf;
+}
+
 CD3DRenderer::CD3DRenderer()
 {
 	m_Direct3D = NULL;
@@ -118,4 +124,128 @@ void CD3DRenderer::CalculateOrthoMatrix(float n, float f)
 	D3DXMatrixOrthoLH(&ortho, (float)m_screenWidth, (float)m_screenHeight, n, f);
 	m_Device->SetTransform(D3DTS_PROJECTION, &ortho);
 
+}
+
+
+//清屏颜色
+void CD3DRenderer::SetClearCol(float r, float g, float b)
+{
+	m_Color = D3DCOLOR_COLORVALUE(r, g, b, 1.0f);
+
+}
+
+
+//开始渲染
+void CD3DRenderer::StartRender(bool bColor, bool bDepth, bool bStencil)
+{
+	if (!m_Device)return;
+	unsigned int buffers = 0;
+	if (bColor)buffers |= D3DCLEAR_TARGET;
+	if (bDepth)buffers |= D3DCLEAR_ZBUFFER;
+	if (bStencil)buffers |= D3DCLEAR_STENCIL;
+
+	if (FAILED(m_Device->Clear(0, NULL, buffers, m_Color, 1, 0)))
+		return;
+
+	if (FAILED(m_Device->BeginScene()))
+		return;
+
+	m_renderingScene = true;			//开始渲染
+
+
+
+
+
+
+}
+//结束渲染
+void CD3DRenderer::EndRender()
+{
+	if (!m_Device)return;
+	m_Device->EndScene();
+	m_Device->Present(NULL, NULL, NULL, NULL);		//将渲染的图形显示出来
+	m_renderingScene = false;		//渲染结束
+}
+
+
+void  CD3DRenderer::ClearBuffers(bool bColor, bool bDepth, bool bStencil)
+{
+	if (!m_Device)return;
+	
+	unsigned int buffers = 0;
+	if (bColor)buffers |= D3DCLEAR_TARGET;
+	if (bDepth)buffers |= D3DCLEAR_ZBUFFER;
+	if (bStencil)buffers |= D3DCLEAR_STENCIL;
+
+	if(m_renderingScene) m_Device->EndScene();
+	if (FAILED(m_Device->Clear(0, NULL, buffers, m_Color, 1, 0)))
+		return;
+
+	if (m_renderingScene)
+		if (FAILED(m_Device->BeginScene()))		//开始渲染
+			return;
+}
+
+//创建静态缓存
+int  CD3DRenderer::CreateStaticBuffer(VertexType vType, PrimType primType, 
+	int totalVerts, int totalIndices, int stride, void **data, unsigned int *indices, int *staticId)
+{
+
+	void *ptr;
+	int index = m_numStaticBuffers;
+	if (!m_staticBufferList)
+	{
+		m_staticBufferList = new stD3DStaticBuffer[1];
+		if (!m_staticBufferList)return UGP_FAIL;
+
+	}
+	else
+	{
+		stD3DStaticBuffer *temp;
+		temp = new stD3DStaticBuffer[m_numStaticBuffers + 1];
+
+		memcpy(temp, m_staticBufferList, sizeof(stD3DStaticBuffer)*m_numStaticBuffers);
+
+		delete[] m_staticBufferList;
+		m_staticBufferList = temp;
+
+
+	}
+
+	m_staticBufferList[index].numVerts = totalVerts;
+	m_staticBufferList[index].numIndices = totalIndices;
+	m_staticBufferList[index].primType = primType;
+	m_staticBufferList[index].stride = stride;
+	m_staticBufferList[index].fvf = CreateD3DFVF(vType);
+
+
+	//如果有顶点索引 就创建顶点缓存
+	if (totalIndices > 0)
+	{
+		if (FAILED(m_Device->CreateIndexBuffer(sizeof(unsigned int)*totalIndices, D3DUSAGE_WRITEONLY,
+			D3DFMT_INDEX16, D3DPOOL_DEFAULT, &m_staticBufferList[index].ibPtr, NULL)))
+		{
+			return UGP_FAIL;
+		}
+
+		if (FAILED(m_staticBufferList[index].ibPtr->Lock(0, 0, (void**)&ptr, 0)))
+			return UGP_FAIL;
+
+		memcpy(ptr, indices, sizeof(unsigned int)*totalIndices);
+		m_staticBufferList[index].ibPtr->Unlock();
+	}
+	else 
+	{
+		m_staticBufferList[index].ibPtr = NULL;
+	}
+
+	if (FAILED(m_Device->CreateVertexBuffer(totalVerts*stride, D3DUSAGE_WRITEONLY, m_staticBufferList[index].fvf,
+		D3DPOOL_DEFAULT, &m_staticBufferList[index].vbPtr, NULL)))
+		return UGP_FAIL;
+
+	if (FAILED(m_staticBufferList[index].vbPtr->Lock(0, 0, (void**)&ptr, 0)))
+		return UGP_FAIL;
+	memcpy(ptr, data, totalVerts*stride);
+
+	m_staticBufferList[index].vbPtr->Unlock();
 }

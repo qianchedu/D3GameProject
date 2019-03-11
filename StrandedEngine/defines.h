@@ -8,6 +8,8 @@
 
 #define WinHWND HWND
 
+typedef long VertexType;
+
 enum  PrimType
 {
 	NULL_TYPE,

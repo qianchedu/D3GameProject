@@ -149,6 +149,9 @@ bool InitializeEngine()
 	if(!CreateD3DRenderer(&g_Render))return false;
 
 	if (!g_Render->Initialize(WIN_WIDTH, WIN_HEIGHT, g_hwnd, FULLSCREENN)) return false;
+
+	g_Render->SetClearCol(0,0,0);
+
 	return true;
 }
 //释放游戏引擎
@@ -164,6 +167,13 @@ bool GameInitialize()
 //游戏循环处理
 void GameLoop()
 {
+	if (!g_Render)return;
+
+	g_Render->StartRender(1, 1,0);		//开始渲染
+	
+	//g_Render->ClearBuffers();
+
+	g_Render->EndRender();				//结束渲染
 }
 
 //释放游戏资源
