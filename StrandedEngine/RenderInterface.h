@@ -31,6 +31,9 @@ public:
 
 	//释放资源
 	virtual void Shutdown() = 0;
+
+	//渲染函数
+	virtual int Render(int staticId) = 0;
 		
 protected:
 	int m_screenWidth;				//屏幕窗口的宽度

@@ -48,6 +48,8 @@ public:
 
 	void Shutdown();
 
+	int Render(int staticId);
+
 
 
 private:

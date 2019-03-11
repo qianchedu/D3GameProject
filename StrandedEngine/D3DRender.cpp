@@ -285,3 +285,109 @@ void CD3DRenderer::Shutdown()
 	m_Direct3D = NULL;
 
 }
+
+
+
+int CD3DRenderer::Render(int staticId)
+{
+
+	if (staticId >= m_numStaticBuffers) return UGP_FAIL;
+
+	if (m_activeStaticBuffer != staticId)
+	{
+		if(m_staticBufferList[staticId].ibPtr != NULL)
+			m_Device->SetIndices(m_staticBufferList[staticId].ibPtr);
+
+		m_Device->SetStreamSource(0,m_staticBufferList[staticId].vbPtr,0,m_staticBufferList[staticId].stride);
+		m_Device->SetFVF(m_staticBufferList[staticId].fvf);
+		m_activeStaticBuffer = staticId;
+
+	}
+
+
+	if (m_staticBufferList[staticId].ibPtr != NULL)
+	{
+		//Ë÷Òý»º´æ»­·¨
+		switch (m_staticBufferList[staticId].primType)
+		{
+		case POINT_LIST:
+			if(FAILED(m_Device->DrawPrimitive(D3DPT_POINTLIST,0,m_staticBufferList[staticId].numVerts)))
+				return UGP_FAIL;
+			break;
+
+		case TRIANGLE_LIST:
+			if (FAILED(m_Device->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, m_staticBufferList[staticId].numVerts / 3, 0, m_staticBufferList[staticId].numIndices)))
+				return UGP_FAIL;
+			break;
+
+		case TRIANGLE_STRIP:
+			if (FAILED(m_Device->DrawIndexedPrimitive(D3DPT_TRIANGLESTRIP, 0, 0, m_staticBufferList[staticId].numVerts / 2, 0, m_staticBufferList[staticId].numIndices)))
+				return UGP_FAIL;
+			break;
+
+		case TRIANGLE_FAN:
+			if (FAILED(m_Device->DrawIndexedPrimitive(D3DPT_TRIANGLEFAN, 0, 0, m_staticBufferList[staticId].numVerts / 3, 0, m_staticBufferList[staticId].numIndices)))
+				return UGP_FAIL;
+			break;
+
+		case LINE_LIST:
+			if (FAILED(m_Device->DrawIndexedPrimitive(D3DPT_LINELIST, 0, 0, m_staticBufferList[staticId].numVerts / 3, 0, m_staticBufferList[staticId].numIndices)))
+				return UGP_FAIL;
+			break;
+
+		case LINE_STRIP:
+			if (FAILED(m_Device->DrawIndexedPrimitive(D3DPT_LINESTRIP, 0, 0, m_staticBufferList[staticId].numVerts / 3, 0, m_staticBufferList[staticId].numIndices)))
+				return UGP_FAIL;
+			break;
+		default:
+			return UGP_FAIL;
+		}
+		//m_Device->DrawIndexedPrimitive();
+	}
+	else
+	{
+	
+
+		//¶¥µã»º´æ»­·¨
+		switch (m_staticBufferList[staticId].primType)
+		{
+		case POINT_LIST:
+			if (FAILED(m_Device->DrawPrimitive(D3DPT_POINTLIST, 0, m_staticBufferList[staticId].numVerts)))
+				return UGP_FAIL;
+			break;
+
+		case TRIANGLE_LIST:
+			if (FAILED(m_Device->DrawPrimitive(D3DPT_TRIANGLELIST, 0, (int)(m_staticBufferList[staticId].numVerts / 3))))
+				return UGP_FAIL;
+
+			break;
+
+		case TRIANGLE_STRIP:
+			if (FAILED(m_Device->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, (int)(m_staticBufferList[staticId].numVerts / 2))))
+				return UGP_FAIL;
+			break;
+
+		case TRIANGLE_FAN:
+			if (FAILED(m_Device->DrawPrimitive(D3DPT_TRIANGLEFAN, 0, (int)(m_staticBufferList[staticId].numVerts / 2))))
+				return UGP_FAIL;
+			break;
+
+		case LINE_LIST:
+			if (FAILED(m_Device->DrawPrimitive(D3DPT_LINELIST, 0, (int)(m_staticBufferList[staticId].numVerts / 2))))
+				return UGP_FAIL;
+			break;
+
+		case LINE_STRIP:
+			if (FAILED(m_Device->DrawPrimitive(D3DPT_LINESTRIP, 0, (int)(m_staticBufferList[staticId].numVerts / 2))))
+				return UGP_FAIL;
+			break;
+		default:
+			return UGP_FAIL;
+		}
+	}
+
+
+	return UGP_OK;
+
+
+}
