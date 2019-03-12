@@ -61,6 +61,23 @@ public:
 	void DisabledLight(int index);
 
 
+
+	//设置透明的
+	void SetTranspency(RenderState state, TransState src, TransState dst);
+	//添加纹理
+	int AddTexture2D(char *file, int *texId);
+
+	void SetTextureFilter(int index, int filter, int val);
+
+	//设置多重纹理
+	void SetMultiTexture();
+	//应用纹理
+	void ApplyTexture(int index, int texId);
+	//保存屏幕截图
+	void SaveScreenShot(char *file);
+	void EnablePointerSprites(float size, float min, float a, float b, float c);
+	void DisablePointSprites();
+
 private:
 	void OneTimeInit();
 

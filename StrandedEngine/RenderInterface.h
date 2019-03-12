@@ -44,6 +44,23 @@ public:
 	virtual void SetLight(stLight *light, int index) = 0;
 	//把某个光关掉
 	virtual void DisabledLight(int index) = 0;			
+
+	//纹理//
+	//设置透明的
+	virtual void SetTranspency(RenderState state, TransState src, TransState dst) =0;
+	//添加纹理
+	virtual int AddTexture2D(char *file, int *texId) = 0;
+
+	virtual void SetTextureFilter(int index, int filter, int val) = 0;
+
+	//设置多重纹理
+	virtual void SetMultiTexture() = 0;
+	//应用纹理
+	virtual void ApplyTexture(int index,int texId) = 0;
+	//保存屏幕截图
+	virtual void SaveScreenShot(char *file) = 0;
+	virtual void EnablePointerSprites(float size, float min, float a, float b, float c) = 0;
+	virtual void DisablePointSprites() = 0;
 		
 protected:
 	int m_screenWidth;				//屏幕窗口的宽度

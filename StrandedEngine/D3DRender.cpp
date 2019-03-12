@@ -482,3 +482,157 @@ void CD3DRenderer::DisabledLight(int index)
 {
 	m_Device->LightEnable(index, FALSE);
 }
+
+//纹理处理//
+
+//设置透明的
+void CD3DRenderer::SetTranspency(RenderState state, TransState src, TransState dst)
+{
+	if (!m_Device)return;
+	if (state == TRANSPARENCY_NONE)
+	{
+		m_Device->SetRenderState(D3DRS_ALPHABLENDENABLE, false);
+		return;
+	}
+
+	if (state == TRANSPARENCY_ENABLE)
+	{
+		m_Device->SetRenderState(D3DRS_ALPHABLENDENABLE,true);
+		switch (src)
+		{
+		case TRANS_ZERO:
+			m_Device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_ZERO);
+			break;
+
+		case TRANS_ONE:
+			m_Device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_ONE);
+			break;
+		case TRANS_SRCCOLOR:
+			m_Device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCCOLOR);
+			break;
+		case TRANS_INVSRCOLOR:
+			m_Device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_INVSRCCOLOR);
+			break;
+		case TRANS_SRCALPHA:
+			m_Device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+			break;
+		case TRANS_INVSRCALPHA:
+			m_Device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_INVSRCALPHA);
+			break;
+		case TRANS_DSTALPHA:
+			m_Device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_DESTALPHA);
+			break;
+		case TRANS_INVDSTALPHA:
+			m_Device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_INVDESTALPHA);
+			break;
+		case TRANS_DSTCOLOR:
+			m_Device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_DESTCOLOR);
+			break;
+		case TRANS_INVDSTCOLOR:
+			m_Device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_INVDESTCOLOR);
+			break;
+		case TRANS_SRCALPHASAT:
+			m_Device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHASAT);
+			break;
+		case TRANS_BOTHSRCALPHA:
+			m_Device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_BOTHSRCALPHA);
+			break;
+		case TRANS_INVBOTHSRCALPHA:
+			m_Device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_BOTHINVSRCALPHA);
+			break;
+		case TRANS_BLENDFACTOR:
+			m_Device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_BLENDFACTOR);
+			break;
+		case TRANS_INVBLENDFACTOR:
+			m_Device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_INVBLENDFACTOR);
+			break;
+		default:
+			m_Device->SetRenderState(D3DRS_ALPHABLENDENABLE, false);
+			return;
+			break;
+		}
+
+
+		switch (dst)
+		{
+		case TRANS_ZERO:
+			m_Device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ZERO);
+			break;
+
+		case TRANS_ONE:
+			m_Device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
+			break;
+		case TRANS_SRCCOLOR:
+			m_Device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_SRCCOLOR);
+			break;
+		case TRANS_INVSRCOLOR:
+			m_Device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCCOLOR);
+			break;
+		case TRANS_SRCALPHA:
+			m_Device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_SRCALPHA);
+			break;
+		case TRANS_INVSRCALPHA:
+			m_Device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+			break;
+		case TRANS_DSTALPHA:
+			m_Device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_DESTALPHA);
+			break;
+		case TRANS_INVDSTALPHA:
+			m_Device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVDESTALPHA);
+			break;
+		case TRANS_DSTCOLOR:
+			m_Device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_DESTCOLOR);
+			break;
+		case TRANS_INVDSTCOLOR:
+			m_Device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVDESTCOLOR);
+			break;
+		case TRANS_SRCALPHASAT:
+			m_Device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_SRCALPHASAT);
+			break;
+		case TRANS_BOTHSRCALPHA:
+			m_Device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_BOTHSRCALPHA);
+			break;
+		case TRANS_INVBOTHSRCALPHA:
+			m_Device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_BOTHINVSRCALPHA);
+			break;
+		case TRANS_BLENDFACTOR:
+			m_Device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_BLENDFACTOR);
+			break;
+		case TRANS_INVBLENDFACTOR:
+			m_Device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVBLENDFACTOR);
+			break;
+		default:
+			m_Device->SetRenderState(D3DRS_ALPHABLENDENABLE, false);
+			return;
+			break;
+		}
+	}
+}
+//添加纹理
+int CD3DRenderer::AddTexture2D(char *file, int *texId)
+{
+	return 1;
+}
+
+void CD3DRenderer::SetTextureFilter(int index, int filter, int val)
+{
+}
+
+//设置多重纹理
+void CD3DRenderer::SetMultiTexture()
+{
+}
+//应用纹理
+void CD3DRenderer::ApplyTexture(int index, int texId)
+{
+}
+//保存屏幕截图
+void CD3DRenderer::SaveScreenShot(char *file)
+{
+}
+void CD3DRenderer::EnablePointerSprites(float size, float min, float a, float b, float c) 
+{
+}
+void CD3DRenderer::DisablePointSprites()
+{
+}
