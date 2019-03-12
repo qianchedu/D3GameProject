@@ -6,6 +6,11 @@
 #define UGP_OK 1
 #define UGP_FAIL 0
 
+#define LIGHT_POINT 1
+#define LIGHT_DIRECTIONAL 2
+#define LIGHT_SPOT 3
+
+
 #define WinHWND HWND
 
 typedef long VertexType;

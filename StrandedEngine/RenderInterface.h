@@ -1,6 +1,9 @@
 #pragma once
 
 #include "defines.h"
+#include "material.h"
+#include "light.h"
+
 //游戏渲染接口
 class CRenderInterface
 {
@@ -34,6 +37,13 @@ public:
 
 	//渲染函数
 	virtual int Render(int staticId) = 0;
+
+	//设置材质
+	virtual void SetMaterial(stMaterial *mat) = 0;
+	//设置光照
+	virtual void SetLight(stLight *light, int index) = 0;
+	//把某个光关掉
+	virtual void DisabledLight(int index) = 0;			
 		
 protected:
 	int m_screenWidth;				//屏幕窗口的宽度

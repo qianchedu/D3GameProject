@@ -46,10 +46,19 @@ public:
 	//参数一：顶点类型
 	int CreateStaticBuffer(VertexType, PrimType, int totalVerts, int totalIndeces, int stride, void **data, unsigned int *indices, int *staticId);
 
+	//释放资源
 	void Shutdown();
-
+	//渲染
 	int Render(int staticId);
 
+
+
+	//设置材质
+	void SetMaterial(stMaterial *mat);
+	//设置光照
+	void SetLight(stLight *light, int index);
+	//把某个光关掉
+	void DisabledLight(int index);
 
 
 private:
