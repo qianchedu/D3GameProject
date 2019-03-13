@@ -1,5 +1,9 @@
 #include "D3DRenderer.h"
 
+inline unsigned long FtoDW(float v)
+{
+	return *((unsigned long *)&v);
+}
 bool CreateD3DRenderer(CRenderInterface **pObj)
 {
 	if (!*pObj)*pObj = new CD3DRenderer();
@@ -280,12 +284,34 @@ void CD3DRenderer::Shutdown()
 	if (m_staticBufferList)delete[] m_staticBufferList;
 	m_staticBufferList = NULL;
 
+	for (unsigned int s = 0; s < m_numTextures; s++)
+	{
+		if (m_textureList[s].fileName)
+		{
+			delete[] m_textureList[s].fileName;
+			m_textureList[s].fileName = NULL;
+		}
+
+		if (m_textureList[s].image)
+		{
+			m_textureList[s].image->Release();
+			m_textureList[s].image = NULL;
+		}
+	}
+
+	m_numTextures = 0;
+	if (m_textureList)delete[] m_textureList;
+	m_textureList = NULL;
+
+
 	if (m_Device)m_Device->Release();
 
 	if (m_Direct3D)m_Direct3D->Release();
 
 	m_Device = NULL;
 	m_Direct3D = NULL;
+
+
 
 }
 
@@ -701,10 +727,36 @@ void CD3DRenderer::ApplyTexture(int index, int texId)
 //±£´æÆÁÄ»½ØÍ¼
 void CD3DRenderer::SaveScreenShot(char *file)
 {
+	if (!file)return;
+	LPDIRECT3DSURFACE9 surface = NULL;
+	D3DDISPLAYMODE disp;
+	m_Device->GetDisplayMode(0, &disp);
+	m_Device->CreateOffscreenPlainSurface(disp.Width, disp.Height,
+		D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT, &surface, NULL);
+	m_Device->GetBackBuffer(0,0,D3DBACKBUFFER_TYPE_MONO,&surface);
+	D3DXSaveSurfaceToFile(file, D3DXIFF_JPG, surface, NULL, NULL);
+	if (surface != NULL)surface->Release();
+	surface = NULL;
+
 }
+
 void CD3DRenderer::EnablePointerSprites(float size, float min, float a, float b, float c) 
 {
+	if (!m_Device)return;
+
+	m_Device->SetRenderState(D3DRS_POINTSPRITEENABLE,TRUE);
+	m_Device->SetRenderState(D3DRS_POINTSCALEENABLE,TRUE);
+	m_Device->SetRenderState(D3DRS_POINTSIZE, FtoDW(size));
+	m_Device->SetRenderState(D3DRS_POINTSIZE_MIN,FtoDW(min));
+	m_Device->SetRenderState(D3DRS_POINTSCALE_A,FtoDW(a));
+	m_Device->SetRenderState(D3DRS_POINTSCALE_B, FtoDW(b));
+	m_Device->SetRenderState(D3DRS_POINTSCALE_C, FtoDW(c));
+
 }
+
 void CD3DRenderer::DisablePointSprites()
 {
+	m_Device->SetRenderState(D3DRS_POINTSPRITEENABLE,FALSE);
+	m_Device->SetRenderState(D3DRS_POINTSCALEENABLE,FALSE);
+
 }
