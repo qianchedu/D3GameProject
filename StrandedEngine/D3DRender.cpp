@@ -24,6 +24,9 @@ CD3DRenderer::CD3DRenderer()
 	m_activeStaticBuffer = UGP_INVALID;
 	m_staticBufferList = NULL;
 
+
+	m_textureList = NULL;
+	m_numTextures = 0;
 }
 
 CD3DRenderer::~CD3DRenderer()
@@ -611,20 +614,89 @@ void CD3DRenderer::SetTranspency(RenderState state, TransState src, TransState d
 //添加纹理
 int CD3DRenderer::AddTexture2D(char *file, int *texId)
 {
-	return 1;
+	if (!file || !m_Device)return UGP_FAIL;
+	int len = strlen(file);
+	if (!len)return UGP_FAIL;
+
+	int index = m_numTextures;
+	if (!m_textureList)
+	{
+		m_textureList = new stD3DTexture[1];
+		if (!m_textureList)return UGP_FAIL;
+	}
+	else
+	{
+		stD3DTexture *temp;
+		temp = new stD3DTexture[m_numTextures + 1];
+		memcpy(temp,m_textureList,sizeof(stD3DTexture)*m_numTextures);
+
+		delete[] m_textureList;
+		m_textureList = temp;
+
+	}
+	m_textureList[index].fileName = new char[len];
+	memcpy(m_textureList[index].fileName,file,len);
+	D3DCOLOR colorkey = 0Xff000000;
+	D3DXIMAGE_INFO info;
+
+	if (D3DXCreateTextureFromFileEx(m_Device, file, 0, 0, 0, 0,
+		D3DFMT_UNKNOWN, D3DPOOL_MANAGED, D3DX_DEFAULT,
+		D3DX_DEFAULT, colorkey, &info, NULL, &m_textureList[index].image) != D3D_OK)
+		return false;
+
+	m_textureList[index].width = info.Width;
+	m_textureList[index].heigh = info.Height;
+	*texId = m_numTextures;
+	m_numTextures++;
+
+	return UGP_OK;
 }
 
+//纹理过滤器
 void CD3DRenderer::SetTextureFilter(int index, int filter, int val)
 {
+	if (!m_Device || index < 0)return;
+
+	//采样器
+	D3DSAMPLERSTATETYPE fil = D3DSAMP_MINFILTER;
+	int v = D3DTEXF_POINT;			//设置成点过滤器
+
+	if (filter == MIN_FILTER) fil = D3DSAMP_MINFILTER;
+	if (filter == MAG_FILTER) fil = D3DSAMP_MAGFILTER;
+	if (filter == MIP_FILTER) fil = D3DSAMP_MIPFILTER;
+
+	if (val == POINT_TYPE) v = D3DTEXF_POINT;
+	if (val == LINEAR_TYPE) v = D3DTEXF_LINEAR;
+	if (val == ANISOTROPIC_TYPE) v = D3DTEXF_ANISOTROPIC;
+
+	m_Device->SetSamplerState(index, fil, v);
+
+
 }
 
 //设置多重纹理
 void CD3DRenderer::SetMultiTexture()
 {
+	if (!m_Device)return;
+	m_Device->SetTextureStageState(0,D3DTSS_TEXCOORDINDEX,0);
+	m_Device->SetTextureStageState(0,D3DTSS_COLOROP,D3DTOP_MODULATE);
+	m_Device->SetTextureStageState(0,D3DTSS_COLORARG1,D3DTA_TEXTURE);
+	m_Device->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
+
+	m_Device->SetTextureStageState(1, D3DTSS_TEXCOORDINDEX, 1);
+	m_Device->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_MODULATE);
+	m_Device->SetTextureStageState(1, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+	m_Device->SetTextureStageState(1, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
 }
 //应用纹理
 void CD3DRenderer::ApplyTexture(int index, int texId)
 {
+	if (!m_Device)return;
+	if (index < 0 || texId < 0)
+		m_Device->SetTexture(0, NULL);
+	else
+		m_Device->SetTexture(index,m_textureList[texId].image);
+
 }
 //保存屏幕截图
 void CD3DRenderer::SaveScreenShot(char *file)

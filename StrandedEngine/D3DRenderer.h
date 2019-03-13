@@ -22,6 +22,16 @@ struct stD3DStaticBuffer
 	PrimType primType;
 
 };
+
+//纹理结构
+struct stD3DTexture
+{
+	char *fileName;
+	int width, heigh;
+	LPDIRECT3DTEXTURE9 image;
+};
+
+
 //游戏渲染器
 //class CD3DRenderer : public CRenderInterface {
 class CD3DRenderer :public  CRenderInterface {
@@ -90,6 +100,10 @@ private :
 	stD3DStaticBuffer *m_staticBufferList;			//静态缓存数组
 	int m_numStaticBuffers;							//静态缓存的大小
 	int m_activeStaticBuffer;						//当前静态缓存数量
+
+
+	stD3DTexture *m_textureList;
+	unsigned int m_numTextures;
 
 };
 
